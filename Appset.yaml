@@ -1,0 +1,28 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: rollout-appset
+  namespace: argocd
+spec:
+  generators:
+  - git:
+      repoURL: https://github.com/Mahesh-git-T/Deploy-rollout
+      revision: HEAD
+      directories:
+      - path: '*'
+  template:
+    metadata:
+      name: '{{path}}-rollout'
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/Mahesh-git-T/Deploy-rollout
+        targetRevision: HEAD
+        path: '{{path}}'
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: default
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
